@@ -12,6 +12,7 @@ nbconvert = "*"
 matplotlib = "*"
 plotly = "*"
 streamlit = "*"
+jsonschema = "*"
 
 [requires]
 python_version = "3.8"

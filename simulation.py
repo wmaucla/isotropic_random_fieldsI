@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import multiprocessing as mp
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -17,7 +18,7 @@ st.latex(r''' Z(x) = \sqrt(2) * \sum_{n=0}^{\infty}J_n(rV_n)  cos(n\theta+2 \pi 
 
 # Settings 
 st.subheader('Simulation Settings')
-m = st.slider('m', min_value=5, max_value=100, value=20) 
+m = st.slider('m', min_value=5, max_value=200, value=20) 
 r = st.slider('r', min_value=0, max_value=20, value=(3, 6)) 
 simulation_number = st.number_input('Number n', value=200)
 
@@ -45,11 +46,13 @@ R, T = np.meshgrid(r_list, theta_list)
 X, Y = R*np.cos(T), R*np.sin(T) # express in polar coordinates
 
 # now calculate z for each r, theta
-
 z_list = []
-for theta in theta_list:
-    for r in r_list:
-        z_list.append(generate_function(simulation_number, r, theta))
+
+def calculate_all_zs(theta):
+    return [generate_function(simulation_number, r, theta) for r in r_list]
+
+with mp.Pool(mp.cpu_count()) as mpool:
+    z_list = mpool.starmap(calculate_all_zs, zip(theta_list))
         
 Z = np.reshape(z_list, (m, m))
 
@@ -62,6 +65,3 @@ fig.update_traces(contours_z=dict(
 fig.update_layout(title='Isotrophic Random Fields', width=600, height=600, autosize=True,
                   margin=dict(l=30, r=50, b=65, t=30))
 st.plotly_chart(fig, use_container_width=True)
-
-
-
