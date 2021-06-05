@@ -1,3 +1,4 @@
+import itertools
 import matplotlib.pyplot as plt
 import multiprocessing as mp
 import numpy as np
@@ -13,7 +14,7 @@ from scipy.special import jv
 
 st.title('Series Representations and Simulation of Isotropic Random Fields in the Euclidean Space')
 
-st.write("As given in the paper, we simulate equation 3.7")
+st.write("For the example in table 1, where we simulate the equation:")
 st.latex(r''' Z(x) = \sqrt(2) * \sum_{n=0}^{\infty}J_n(rV_n)  cos(n\theta+2 \pi U_n), x=(rcos\theta, rsin\theta) ''')
 
 # Settings 
@@ -65,3 +66,50 @@ fig.update_traces(contours_z=dict(
 fig.update_layout(title='Isotrophic Random Fields', width=600, height=600, autosize=True,
                   margin=dict(l=30, r=50, b=65, t=30))
 st.plotly_chart(fig, use_container_width=True)
+
+
+st.subheader('Example 3.3 (continued), Case I')
+st.write("The following image comes from the paper, with the aforementioned reference")
+
+def example_1(i, j):
+    """
+    This function takes in two positional arguments, i and j, which represents the corresponding 
+    values in a m by m matrix (based on the value set in cell 4)
+    """
+    r = R[i, j]
+    theta = T[i, j]
+    
+    z_output = []
+    for i in range(simulation_number):
+        y1 = -np.log(uniform(low=0, high=1, size=1))
+        y2 = uniform(low=np.log(2), high=np.log(8), size=1)
+        v1 = (y1 ** 0.5) * np.exp(-y2/2)
+        w1 = uniform(low=0, high=1, size=1)
+        u1 = uniform(low=0, high=1, size=1)
+        Zi = jv(i, 2*r*np.sqrt(-v1 * np.log(w1))) * np.cos(i*theta+2*np.pi*u1)
+        z_output.append(Zi)
+    return np.sqrt(2) * np.sum(z_output)
+
+def generate_z(function):
+    z_list = []
+    with mp.Pool(mp.cpu_count()) as p:
+        z_list = p.starmap(function, itertools.product(range(m), range(m)))
+    
+    Z = np.reshape(z_list, (m, m))
+    return Z
+
+Z = generate_z(example_1)
+fig = go.Figure(data=[go.Surface(x=X, y=Y, z=Z)])
+fig.update_traces(contours_z=dict(
+    show=True, usecolormap=True,
+    highlightcolor="limegreen"))
+fig.update_layout(title='', autosize=False,
+                  width=1000, height=1000,
+                  margin=dict(l=65, r=50, b=70, t=80), scene=dict(
+        xaxis=dict(showticklabels=False),
+        yaxis=dict(showticklabels=False),
+        zaxis=dict(showticklabels=False),
+    ))
+st.plotly_chart(fig, use_container_width=True)
+
+st.write("Additional examples are omitted and should reference the repo for additional code")
