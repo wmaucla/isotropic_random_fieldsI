@@ -13,7 +13,7 @@ for simulation of isotropic (non-Gaussian) random fields.
 ### File Guide
 
 * `SERIES REPRESENTATIONS AND SIMULATION OF ISOTROPIC RANDOM FIELDS IN THE EUCLIDEAN SPACE.ipynb` is a notebook that shows the code used for simulation
-* A version of the code in the notebook is used in the `simulation.py` file, which is used to house the website version
+* A version of the code in the notebook is used in the `simulation.py` file, which is used to house the [website version](https://share.streamlit.io/wmaucla/isotropic_random_fieldsi/main/simulation.py) - NOTE: if this does not open, please reach out; it simply means the site has been inactive for too long
 * Please view [this](https://nbviewer.jupyter.org/github/wmaucla/isotropic_random_fields/blob/main/SERIES%20REPRESENTATIONS%20AND%20SIMULATION%20OF%20ISOTROPIC%20RANDOM%20FIELDS%20IN%20THE%20EUCLIDEAN%20SPACE.ipynb?flush_cache=true) link to view the notebook as a webpage
 * `Pipfile` and `Pipfile.lock` are used for replication of the results
 
